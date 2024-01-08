@@ -1,0 +1,239 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+class BT
+{
+
+    private Node root;
+
+    private static class Node 
+    {
+        Node left;
+        Node right;
+        int value;
+
+        Node(int value) 
+        {
+            this.value = value;
+        }
+    }
+
+    public void populate(Scanner scanner) 
+    {
+        System.out.println("Enter the root node value: ");
+        root = new Node(scanner.nextInt());
+        populate(scanner, root);
+    }
+
+    private void populate(Scanner scanner, Node node)
+    {
+        System.out.println("Do you want to enter left of " + node.value +"(true/false)");
+        if (scanner.nextBoolean()) 
+        {
+            System.out.println("Enter the value of the left of " + node.value);
+            node.left = new Node(scanner.nextInt());
+            populate(scanner, node.left);
+        }
+        System.out.println("Do you want to enter right of " + node.value +"(true/false)");
+        if (scanner.nextBoolean())
+        {
+            System.out.println("Enter tyhe value of the right of " + node.value);
+            node.right = new Node(scanner.nextInt());
+            populate(scanner, node.right);
+        }
+    }
+
+    //preety display method
+    public void preetyDisplay()
+    {
+        preetyDisplay(root, 0);
+    }
+
+    private void preetyDisplay(Node node, int level) 
+    {
+        if (node == null) 
+        {
+            return;
+        }
+        preetyDisplay(node.right, level + 1);
+        if (level != 0) 
+        {
+            for (int i = 0; i < level - 1; i++) 
+            {
+                System.out.print("|\t");
+            }
+            System.out.println("|------> [" + node.value + "]");
+        } else
+        {
+            System.out.println(node.value);
+        }
+        preetyDisplay(node.left, level + 1);
+    }
+
+    //find root data method
+    Node getRoot() 
+    {
+        return root;
+    }
+
+   //main method
+    public static void main(String[] args) 
+    {
+        Scanner scanner = new Scanner(System.in);
+        BT tree = new BT();
+        tree.populate(scanner);
+        System.out.println();
+        int choice;
+        do 
+        {
+            System.out.println();
+            System.out.println();
+            System.out.println("****************************");
+            System.out.println("Welcome to binary tree ");
+            System.out.println("Which B TREE operation do you choose?");
+            System.out.println("1. Find root data\n2. Preorder\n3. Inorder\n4. Postorder\n5. Levelorder");
+            System.out.println("6. Count of Nodes\n7. Sum of Nodes\n8. display\n9. Exit");
+            System.out.println("*****************************");
+            System.out.println();
+            choice = scanner.nextInt();
+            System.out.println();
+
+            switch (choice) 
+            {
+                case 1:
+                    System.out.println("Root data: " + tree.getRoot().value);
+                    break;
+                case 2:
+                    preorder(tree.getRoot());
+                    break;
+                case 3:
+                    inorder(tree.getRoot());
+                    break;
+                case 4:
+                    postorder(tree.getRoot());
+                    break;
+                case 5:
+                    levelOrder(tree.getRoot());
+                    break;
+                case 6:
+                    int countofnode = countOfNodes(tree.getRoot());
+                    System.out.println("Count of nodes: " + countofnode);
+                    break;
+                case 7:
+                    int sumofnode = sumOfNodes(tree.getRoot());
+                    System.out.println("Sum of nodes: " + sumofnode);
+                    break;
+                case 8:
+                    tree.preetyDisplay();
+                    break;
+                case 9:
+                    System.out.println("Exiting program.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 9);
+    }
+
+    // Other methods (preorder, inorder, postorder,levelorder,sum of nodes,count of nodes)
+    public static void preorder(Node root) 
+    {
+        if (root == null) 
+        {
+
+            return;
+        }
+        System.out.print(root.value + " ");
+        preorder(root.left);
+        preorder(root.right);
+    }
+
+    public static void inorder(Node root) 
+    {
+        if (root == null) 
+        {
+
+            return;
+        }
+        inorder(root.left);
+        System.out.print(root.value + " ");
+        inorder(root.right);
+    }
+
+    public static void postorder(Node root) 
+    {
+        if (root == null) 
+        {
+            return;
+        }
+        postorder(root.left);
+        postorder(root.right);
+        System.out.print(root.value + " ");
+    }
+
+    public static void levelOrder(Node root) 
+    {
+        if (root == null) 
+        {
+            return;
+        }
+        Queue<Node> q = new LinkedList<>();
+        q.add(root);
+        q.add(null);
+        while (!q.isEmpty()) 
+        {
+            Node curr = q.remove();
+            if (curr == null) 
+            {
+                System.out.println();
+                // queue empty
+                if (q.isEmpty()) 
+                {
+                    break;
+                } 
+                else 
+                {
+                    q.add(null);
+                }
+            } 
+            else 
+            {
+                System.out.print(curr.value + " ");
+                if (curr.left != null) 
+                {
+                    q.add(curr.left);
+                }
+                if (curr.right != null) 
+                {
+                    q.add(curr.right);
+                }
+            }
+        }
+    }
+
+    public static int countOfNodes(Node root) 
+    {
+        if (root == null) 
+        {
+            return 0;
+        }
+
+        int leftNodes = countOfNodes(root.left);
+        int rightNodes = countOfNodes(root.right);
+        return leftNodes + rightNodes + 1;
+    }
+
+    public static int sumOfNodes(Node root) 
+    {
+        if (root == null) 
+        {
+            return 0;
+        }
+
+        int leftSum = sumOfNodes(root.left);
+        int rightSum = sumOfNodes(root.right);
+        return leftSum + rightSum + root.value;
+    }
+
+}
